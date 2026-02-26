@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Legal AID Explainer - Simplify Indian Laws</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <h1>⚖️ Visual Legal AID</h1>
+                <p>Simplifying Indian Laws for Everyone</p>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#document">Upload Document</a></li>
+                <li><a href="#search">Search Laws</a></li>
+                <li><a href="#faq">FAQ</a></li>
+                <li><a href="#helplines">Helplines</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <h2>Understanding Indian Laws Made Simple</h2>
+            <p>Legal information in English, Hindi, and Marathi</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary" onclick="scrollTo('document')">Upload Document</button>
+                <button class="btn btn-secondary" onclick="scrollTo('search')">Search Laws</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Document Upload Section -->
+    <section id="document" class="section">
+        <div class="container">
+            <h2>📄 Simplify Legal Documents</h2>
+            <p>Upload any legal document or paste legal text to get simple explanations</p>
+            
+            <div class="upload-box">
+                <input type="file" id="fileInput" accept=".pdf,.txt,.docx" style="display:none">
+                <button class="btn btn-upload" onclick="document.getElementById('fileInput').click()">
+                    📁 Choose File
+                </button>
+                <p>Or paste text below:</p>
+                <textarea id="legalText" placeholder="Paste your legal document or text here..." rows="8"></textarea>
+                <button class="btn btn-primary" onclick="analyzeLegalDocument()">Analyze Document</button>
+            </div>
+
+            <div id="documentResult" class="result-box" style="display:none;">
+                <h3>📊 Analysis Results</h3>
+                
+                <div class="tabs">
+                    <button class="tab-button active" onclick="switchTab('english')">English</button>
+                    <button class="tab-button" onclick="switchTab('hindi')">Hindi (हिंदी)</button>
+                    <button class="tab-button" onclick="switchTab('marathi')">Marathi (मराठी)</button>
+                </div>
+
+                <div id="english" class="tab-content active">
+                    <h4>Simple English Explanation</h4>
+                    <div id="englishExplanation"></div>
+                </div>
+
+                <div id="hindi" class="tab-content">
+                    <h4>सरल हिंदी व्याख्या</h4>
+                    <div id="hindiExplanation"></div>
+                </div>
+
+                <div id="marathi" class="tab-content">
+                    <h4>सोपी मराठी व्याख्या</h4>
+                    <div id="marathiExplanation"></div>
+                </div>
+
+                <div id="keyPoints" class="key-points">
+                    <h4>🔑 Key Points</h4>
+                    <ul id="keyPointsList"></ul>
+                </div>
+
+                <div id="sections" class="detected-sections" style="display:none;">
+                    <h4>⚖️ Detected Legal Sections</h4>
+                    <ul id="sectionsList"></ul>
+                </div>
+
+                <div id="nextSteps" class="next-steps" style="display:none;">
+                    <h4>📋 Suggested Next Steps (Information Only)</h4>
+                    <ul id="stepsList"></ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search Legal Sections -->
+    <section id="search" class="section alternate">
+        <div class="container">
+            <h2>🔍 Search Indian Laws & Sections</h2>
+            <p>Search for any legal section or law to get simple explanations</p>
+
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search: IPC 420, Consumer Rights, FIR, Domestic Violence..." 
+                       onkeyup="searchLaws()">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+
+            <div id="legalSectionResult" class="result-box" style="display:none;">
+                <div class="tabs">
+                    <button class="tab-button active" onclick="switchTab('section-english')">English</button>
+                    <button class="tab-button" onclick="switchTab('section-hindi')">Hindi</button>
+                    <button class="tab-button" onclick="switchTab('section-marathi')">Marathi</button>
+                </div>
+
+                <div id="section-english" class="tab-content active">
+                    <h4>What is this law about?</h4>
+                    <p id="sectionEnglish"></p>
+                    
+                    <h4>When does it apply?</h4>
+                    <p id="whenApplies"></p>
+                    
+                    <h4>What is the punishment?</h4>
+                    <p id="punishment"></p>
+                    
+                    <h4>What are your rights?</h4>
+                    <p id="yourRights"></p>
+                    
+                    <h4>Real-life Example:</h4>
+                    <p id="example"></p>
+                </div>
+
+                <div id="section-hindi" class="tab-content">
+                    <h4>यह कानून किसके बारे में है?</h4>
+                    <p id="sectionHindi"></p>
+                    
+                    <h4>यह कब लागू होता है?</h4>
+                    <p id="whenApplesHindi"></p>
+                    
+                    <h4>सजा क्या है?</h4>
+                    <p id="punishmentHindi"></p>
+                    
+                    <h4>आपके अधिकार क्या हैं?</h4>
+                    <p id="yourRightsHindi"></p>
+                    
+                    <h4>वास्तविक जीवन का उदाहरण:</h4>
+                    <p id="exampleHindi"></p>
+                </div>
+
+                <div id="section-marathi" class="tab-content">
+                    <h4>हा कायदा काय विषयी आहे?</h4>
+                    <p id="sectionMarathi"></p>
+                    
+                    <h4>हा केव्हा लागू होतो?</h4>
+                    <p id="whenApplesMarathi"></p>
+                    
+                    <h4>शिक्षा काय आहे?</h4>
+                    <p id="punishmentMarathi"></p>
+                    
+                    <h4>तुमचे अधिकार काय आहेत?</h4>
+                    <p id="yourRightsMarathi"></p>
+                    
+                    <h4>वास्तविक जीवनाचे उदाहरण:</h4>
+                    <p id="exampleMarathi"></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Chatbot Section -->
+    <section id="faq" class="section">
+        <div class="container">
+            <h2>💬 Legal FAQ & Chatbot</h2>
+            <p>Ask your legal questions in simple language</p>
+
+            <div class="faq-container">
+                <div class="faq-input">
+                    <textarea id="faqQuestion" placeholder="Ask your legal question here..." rows="3"></textarea>
+                    <button class="btn btn-primary" onclick="answerFAQ()">Get Answer</button>
+                </div>
+
+                <div id="faqResult" class="result-box" style="display:none;">
+                    <h4>📌 Answer:</h4>
+                    <div id="faqAnswer"></div>
+                    <div id="faqHelpline" class="helpline-box" style="display:none;">
+                        <h4>📞 Relevant Helplines:</h4>
+                        <ul id="helplineList"></ul>
+                    </div>
+                </div>
+
+                <div class="faq-quick">
+                    <h4>🎯 Common Questions:</h4>
+                    <div class="faq-buttons">
+                        <button onclick="quickFAQ('How to file FIR?')">How to file FIR?</button>
+                        <button onclick="quickFAQ('What are Consumer Rights?')">Consumer Rights</button>
+                        <button onclick="quickFAQ('What to do about domestic violence?')">Domestic Violence</button>
+                        <button onclick="quickFAQ('How to claim insurance?')">Insurance Claims</button>
+                        <button onclick="quickFAQ('What is bail?')">What is Bail?</button>
+                        <button onclick="quickFAQ('How to file a case?')">How to file a case?</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Helplines Section -->
+    <section id="helplines" class="section alternate">
+        <div class="container">
+            <h2>📞 Important Helplines & Contacts</h2>
+            <p>Quick access to emergency and legal helpline numbers</p>
+
+            <div class="helplines-grid">
+                <div class="helpline-card">
+                    <h3>🚨 Emergency</h3>
+                    <p><strong>Police</strong><br>100</p>
+                    <p><strong>Ambulance</strong><br>102</p>
+                </div>
+
+                <div class="helpline-card">
+                    <h3>👩‍⚖️ Women's Safety</h3>
+                    <p><strong>Women Helpline</strong><br>1091</p>
+                    <p><strong>Domestic Violence</strong><br>181</p>
+                </div>
+
+                <div class="helpline-card">
+                    <h3>⚖️ Legal Support</h3>
+                    <p><strong>Legal Services Authority</strong><br>1800-180-1111</p>
+                    <p><strong>Consumer Helpline</strong><br>1800-11-4000</p>
+                </div>
+
+                <div class="helpline-card">
+                    <h3>👶 Child Support</h3>
+                    <p><strong>Child Helpline</strong><br>1098</p>
+                    <p><strong>POCSO Cases</strong><br>1800-180-5500</p>
+                </div>
+
+                <div class="helpline-card">
+                    <h3>💼 Labor Rights</h3>
+                    <p><strong>Labor Department</strong><br>Contact State Office</p>
+                    <p><strong>Sexual Harassment</strong><br>POSH Committee</p>
+                </div>
+
+                <div class="helpline-card">
+                    <h3>🏠 Tenant Rights</h3>
+                    <p><strong>Municipal Corporation</strong><br>State Specific</p>
+                    <p><strong>Free Legal Aid</strong><br>NALSA 1800-180-1111</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>⚠️ <strong>Disclaimer:</strong> This website provides legal information only, not professional legal advice. 
+               Please consult a qualified lawyer for specific legal matters.</p>
+            <p>&copy; 2026 Visual Legal AID Explainer | Simplifying Indian Laws for Everyone</p>
+            <p>Made with ❤️ for Legal Awareness in India</p>
+        </div>
+    </footer>
+
+    <script src="js/legal-sections.js"></script>
+    <script src="js/translator.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
